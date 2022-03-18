@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[21]:
+# In[2]:
 
 
 from sklearn.metrics import mean_squared_error
@@ -22,7 +22,7 @@ device = 'cpu'
 #And our exercise 1a
 
 
-# In[2]:
+# In[3]:
 
 
 train = pd.read_csv(r'C:\Users\erics\Documents\Programme\IntroML\Task1\task1b_ql4jfi6af0\train.csv')
@@ -40,7 +40,7 @@ print(Y.shape)
 # 
 # Wir verlieren etwas präzision durch das Laden in den DataFrame (durch float precision)
 
-# In[3]:
+# In[4]:
 
 
 def transform(X):
@@ -52,20 +52,20 @@ def transform(X):
     return np.concatenate((l1, l2, l3, l4, const), axis=1)
 
 
-# In[4]:
+# In[5]:
 
 
 transformer = FunctionTransformer(transform, validate=True)
 
 
-# In[5]:
+# In[6]:
 
 
 #X_Test = np.array([[1, 2, 3, 4, 5], [1, 1,1, 1,1], [1, 1,1, 1,1], [1, 1,1, 1,1]])
 #print(transformer.transform(X_Test))
 
 
-# In[6]:
+# In[7]:
 
 
 X_trans = transformer.transform(X)
@@ -144,13 +144,56 @@ print(coefficiants)
 # store
 # 
 
+# In[26]:
+
+
+dictionary = {'Coefficiants': coefficiants}
+avg_acc_df = pd.DataFrame(dictionary )
+print(avg_acc_df)
+avg_acc_df.to_csv(r'C:\Users\erics\Documents\Programme\IntroML\Task1\submission1bV2.csv', index=False, header=False)
+
+
+# Do it again with 10fold CV
+
 # In[9]:
 
 
-#dictionary = {'Coefficiants': coefficiants}
-#avg_acc_df = pd.DataFrame(dictionary )
-#print(avg_acc_df)
-#avg_acc_df.to_csv(r'C:\Users\erics\Documents\Programme\IntroML\Task1\submission1bV2.csv', index=False, header=False)
+k = 10
+kf = KFold(n_splits=k, random_state=None)
+model4 = LinearRegression()
+acc_score = []
+best_acc = 1000
+
+
+# In[12]:
+
+
+for train_index , test_index in kf.split(X):
+        X_train , X_test = X_trans[train_index,:],X_trans[test_index,:]
+        Y_train , Y_test = Y[train_index] , Y[test_index]
+
+        model4.fit(X_train,Y_train)
+        pred_values = model4.predict(X_test)
+
+        acc = np.sqrt(mean_squared_error(pred_values , Y_test))
+        if acc < best_acc:
+            best_acc = acc
+            best_model = model4
+            
+        acc_score.append(acc)
+
+
+# In[13]:
+
+
+print(best_acc)
+print(acc_score)
+
+
+# In[14]:
+
+
+print(model4.coef_)
 
 
 # In[ ]:
