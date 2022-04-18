@@ -44,17 +44,17 @@ train_label = pd.read_csv(r'C:\Users\erics\Documents\Programme\IntroML\Task2\tas
 test_feat = pd.read_csv(r'C:\Users\erics\Documents\Programme\IntroML\Task2\task2_k49am2lqi\test_features.csv')
 
 
-# In[61]:
+# # In[61]:
 
 
-test_feat
+# test_feat
 
 
 # In[62]:
 
 
 Abgabe = pd.DataFrame({'pid': test_feat.iloc[0::12, 0].values})
-Abgabe
+# Abgabe
 
 
 # In[63]:
@@ -68,51 +68,14 @@ train_label = train_label.sort_values(by=['pid'])
 # In[64]:
 
 
-train_feat
+# train_feat
 
 
 # In[65]:
 
 
-train_label
+# train_label
 
-
-# In[66]:
-
-
-train_feat_np = train_feat.to_numpy()
-siz = int(len(train_feat_np)/12)
-#print(siz)
-
-X = np.zeros((siz,37*12))
-for pid in range(siz):
-    for feature in range(37):
-        for time in range(12):
-            X[pid,feature*12+time] = train_feat_np[pid*12+time,feature]
-
-
-# In[67]:
-
-
-tmp = [[val+"_"+str(i) for i in range(12)] for val in train_feat.columns]
-keys = []
-for sublist in tmp:
-    for item in sublist:
-        keys.append(item)
-
-X_df = pd.DataFrame(columns=keys, index=range(18995), data = X)
-
-for i in range(1,12):
-    X_df.pop("Age_"+str(i))
-for i in range(0,12):
-    X_df.pop("pid_"+str(i))
-    X_df.pop("Time_"+str(i))
-
-
-# In[68]:
-
-
-X_df
 
 
 # In[69]:
@@ -158,7 +121,7 @@ labels.pop("pid")
 # In[73]:
 
 
-labels
+# labels
 
 
 # In[74]:
@@ -173,15 +136,17 @@ labels = labels.to_numpy()
 
 
 def make_features(data):
-    a = []
     calc_feat = [np.nansum,  np.nanmean, np.nanvar,np.nanmedian, np.nanmax, np.nanmin]
+    a = []
     
     for i in range(int(data.shape[0] / 12)):
-        data_without = data[i*12 : (i+1) * 12, 2:] #everything after Age 
         features = np.empty((6, data[:, 2:].shape[1]))
+        data_without = data[i*12 : (i+1) * 12, 2:] #everything after Age 
         
-        for i, feat in enumerate(calc_feat):
+        i = 0
+        for feat in calc_feat:
             features[i] = feat(data_without, axis=0)
+            i+=1
         a.append(features)
     return np.asarray(a)
 
@@ -197,7 +162,7 @@ test_feat_new = make_features(test_feat.to_numpy())
 
 
 train_feat_new = np.resize(train_feat_new, ((18995, 210)))
-train_feat_new.shape
+# train_feat_new.shape
 
 
 # In[78]:
@@ -210,7 +175,7 @@ print(test_feat_new.shape)
 # In[48]:
 
 
-np.isnan(train_feat_new)
+# np.isnan(train_feat_new)
 
 
 # In[57]:
@@ -229,7 +194,7 @@ np.save("X_imputed_3_distance", train_feat_new2)
 # In[79]:
 
 
-train_feat_new2 = np.load("X_imputed_3_distance.npy")
+# train_feat_new2 = np.load("X_imputed_3_distance.npy")
 
 
 # In[80]:
@@ -249,9 +214,9 @@ np.save("X_test_imputed_3_distance.npy", test_feat_new2)
 # In[148]:
 
 
-from sklearn.impute import SimpleImputer
-imputer2 = SimpleImputer(strategy='median')
-train_feat_new2MEDIAN = imputer2.fit_transform(train_feat_new)
+# from sklearn.impute import SimpleImputer
+# imputer2 = SimpleImputer(strategy='median')
+# train_feat_new2MEDIAN = imputer2.fit_transform(train_feat_new)
 
 
 # In[ ]:
@@ -294,43 +259,43 @@ dataplot = sb.heatmap(Train_feat_corr, cmap="YlGnBu", annot=True)
 # In[15]:
 
 
-X = X_df.to_numpy()
-imputer = KNNImputer(n_neighbors=5, weights='distance')
-X = imputer.fit_transform(X)
+# X = X_df.to_numpy()
+# imputer = KNNImputer(n_neighbors=5, weights='distance')
+# X = imputer.fit_transform(X)
 
 
-# In[ ]:
+# # In[ ]:
 
 
-np.save("X_imputed_5_distance", X)
+# np.save("X_imputed_5_distance", X)
 
 
-# In[16]:
+# # In[16]:
 
 
-X = np.load("X_imputed_5_distance.npy")
+# X = np.load("X_imputed_5_distance.npy")
 
 
-# Select best
-# 
+# # Select best
+# # 
 
-# In[17]:
+# # In[17]:
 
 
-X
+# X
 
 
 # In[18]:
 
 
-y = labels[:, 0] #try to predict one label
+# y = labels[:, 0] #try to predict one label
 
 
-# In[19]:
+# # In[19]:
 
 
-X_new = SelectKBest(f_classif, k=20).fit_transform(X, y)
-X_new
+# X_new = SelectKBest(f_classif, k=20).fit_transform(X, y)
+# #X_new
 
 
 # Subtask 1
@@ -341,221 +306,221 @@ X_new
 # In[185]:
 
 
-class CustomDataset(Dataset):
-    def __init__(self, X, labels, batch_size=64, transform=None, target_transform=None):
-        self.labels = labels
-        self.X = X
-        self.batch_size = batch_size
-        self.transform = transform
-        self.target_transform = target_transform
+# class CustomDataset(Dataset):
+#     def __init__(self, X, labels, batch_size=64, transform=None, target_transform=None):
+#         self.labels = labels
+#         self.X = X
+#         self.batch_size = batch_size
+#         self.transform = transform
+#         self.target_transform = target_transform
 
-    def __len__(self):
-        return len(self.img_labels)
+#     def __len__(self):
+#         return len(self.img_labels)
 
-    def __getitem__(self, idx):
-        data = self.X[idx]
-        label = self.labels[idx, 0]
-        if self.transform:
-            image = self.transform(data)
-        if self.target_transform:
-            label = self.target_transform(label)
-        return data, label
-
-
-# In[186]:
+#     def __getitem__(self, idx):
+#         data = self.X[idx]
+#         label = self.labels[idx, 0]
+#         if self.transform:
+#             image = self.transform(data)
+#         if self.target_transform:
+#             label = self.target_transform(label)
+#         return data, label
 
 
-class Linear2(nn.Module):
-    def __init__(self, in_Dim, out_Dim):
-        super(Linear2, self).__init__()
+# # In[186]:
+
+
+# class Linear2(nn.Module):
+#     def __init__(self, in_Dim, out_Dim):
+#         super(Linear2, self).__init__()
  
-        self.lin0 = nn.Linear(in_features=in_Dim, out_features=512)
-        self.lin1 = nn.Linear(in_features=512, out_features=out_Dim)
+#         self.lin0 = nn.Linear(in_features=in_Dim, out_features=512)
+#         self.lin1 = nn.Linear(in_features=512, out_features=out_Dim)
         
  
-    def forward(self, x):
-        x = self.lin0(x)
-        x = F.relu(x)
-        prediction = torch.sigmoid(self.lin1(x))
-        return prediction
+#     def forward(self, x):
+#         x = self.lin0(x)
+#         x = F.relu(x)
+#         prediction = torch.sigmoid(self.lin1(x))
+#         return prediction
 
 
-# Learning parameters
+# # Learning parameters
 
-# In[187]:
-
-
-epochs = 10
-batch_size = 64
-lr = 0.0001
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+# # In[187]:
 
 
-# In[188]:
+# epochs = 10
+# batch_size = 64
+# lr = 0.0001
+# device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-model = Linear2(X.shape[1], 1 ).to(device) #labels.shape[1] ).to(device)
-print(model)
+# # In[188]:
 
 
-# In[230]:
+# model = Linear2(X.shape[1], 1 ).to(device) #labels.shape[1] ).to(device)
+# print(model)
 
 
-opt = optim.Adam(model.parameters(), lr=lr)
-loss = nn.BCELoss()
+# # In[230]:
 
 
-# In[232]:
+# opt = optim.Adam(model.parameters(), lr=lr)
+# loss = nn.BCELoss()
 
 
-train_data = X[:-2000]
-val_data = X[-2000:]
-print(len(train_data))
-
-train_data = train_data.astype(dtype=np.float32)
-val_data = val_data.astype(dtype=np.float32)
-y = y.astype(dtype=np.float32)
-print(train_data.dtype)
-print(val_data.dtype)
+# # In[232]:
 
 
-# In[191]:
+# train_data = X[:-2000]
+# val_data = X[-2000:]
+# print(len(train_data))
+
+# train_data = train_data.astype(dtype=np.float32)
+# val_data = val_data.astype(dtype=np.float32)
+# y = y.astype(dtype=np.float32)
+# print(train_data.dtype)
+# print(val_data.dtype)
 
 
-train_loader = CustomDataset(
-    train_data,
-    y,
-    batch_size=batch_size,
-)
-val_loader = CustomDataset(
-    val_data,
-    y,
-    batch_size=batch_size,
-)
+# # In[191]:
 
 
-# In[239]:
+# train_loader = CustomDataset(
+#     train_data,
+#     y,
+#     batch_size=batch_size,
+# )
+# val_loader = CustomDataset(
+#     val_data,
+#     y,
+#     batch_size=batch_size,
+# )
 
 
-def fit(model, X, labels, loss):
-    X.to(device)
-    labels.to(device)
-    model.train
-    running_loss = 0.0
+# # In[239]:
+
+
+# def fit(model, X, labels, loss):
+#     X.to(device)
+#     labels.to(device)
+#     model.train
+#     running_loss = 0.0
    
-    #for i in range(len(labels)):
-    print(X.size())
-    opt.zero_grad()
+#     #for i in range(len(labels)):
+#     print(X.size())
+#     opt.zero_grad()
 
-    inp = model(X)        
+#     inp = model(X)        
 
-    output = loss(inp, labels)
+#     output = loss(inp, labels)
 
 
-    running_loss += output.item()
-    output.backward()
+#     running_loss += output.item()
+#     output.backward()
 
-    opt.step()
+#     opt.step()
         
-    train_loss = running_loss
-    return train_loss
+#     train_loss = running_loss
+#     return train_loss
 
 
-# In[240]:
+# # In[240]:
 
 
-def validate(model, X, labels, loss):
-    X.to(device)
-    labels.to(device)
-    model.eval()
-    running_loss = 0.0
-    with torch.no_grad():
-        #for i in range(len(labels)):
+# def validate(model, X, labels, loss):
+#     X.to(device)
+#     labels.to(device)
+#     model.eval()
+#     running_loss = 0.0
+#     with torch.no_grad():
+#         #for i in range(len(labels)):
        
-        opt.zero_grad()
+#         opt.zero_grad()
 
-        inp = model(X)        
+#         inp = model(X)        
 
-        output = loss(inp, labels)
+#         output = loss(inp, labels)
 
 
 
-        running_loss += output.item()
+#         running_loss += output.item()
             
-    val_loss = running_loss
-    return val_loss
+#     val_loss = running_loss
+#     return val_loss
 
 
-# In[241]:
+# # In[241]:
 
 
-train_loss = []
-val_loss = []
-torch.backends.cudnn.benchmark = True #choose best kernel for computation
+# train_loss = []
+# val_loss = []
+# torch.backends.cudnn.benchmark = True #choose best kernel for computation
 
-for epoch in range(epochs):
-    print(f"Epoch {epoch+1} of {epochs}")
+# for epoch in range(epochs):
+#     print(f"Epoch {epoch+1} of {epochs}")
 
-    train_epoch_loss = fit(model, torch.from_numpy(train_data), torch.from_numpy(y[:-2000]), loss)
-    val_epoch_loss = validate(model, torch.from_numpy(val_data), torch.from_numpy(y[-2000:]), loss)
+#     train_epoch_loss = fit(model, torch.from_numpy(train_data), torch.from_numpy(y[:-2000]), loss)
+#     val_epoch_loss = validate(model, torch.from_numpy(val_data), torch.from_numpy(y[-2000:]), loss)
     
-    train_loss.append(train_epoch_loss)
-    val_loss.append(val_epoch_loss)
-    print(f"Train Loss: {train_epoch_loss:.4f}")
-    print(f"Val Loss: {val_epoch_loss:.4f}")
+#     train_loss.append(train_epoch_loss)
+#     val_loss.append(val_epoch_loss)
+#     print(f"Train Loss: {train_epoch_loss:.4f}")
+#     print(f"Val Loss: {val_epoch_loss:.4f}")
 
 
-# Evaluate
+# # Evaluate
 
-# In[248]:
-
-
-out = model.forward( torch.from_numpy(val_data))
-out = torch.round(out) #round to nearest 0 or 1
-out
+# # In[248]:
 
 
-# In[256]:
+# out = model.forward( torch.from_numpy(val_data))
+# out = torch.round(out) #round to nearest 0 or 1
+# out
 
 
-len(y[-2000:])
+# # In[256]:
 
 
-# In[259]:
+# len(y[-2000:])
 
 
-loss(out, torch.from_numpy(y[-2000:]))
+# # In[259]:
 
 
-# In[261]:
+# loss(out, torch.from_numpy(y[-2000:]))
 
 
-# Number of wrong elements
-val_labels = y[-2000:]
-wrong = 0
-for i in range(len(val_labels)):
-    if(out[i] != val_labels[i]):
-        wrong += 1
+# # In[261]:
+
+
+# # Number of wrong elements
+# val_labels = y[-2000:]
+# wrong = 0
+# for i in range(len(val_labels)):
+#     if(out[i] != val_labels[i]):
+#         wrong += 1
         
-print(wrong)
+# print(wrong)
 
 
-# In[118]:
+# # In[118]:
 
 
-def r2_loss(output, target):
-    target_mean = torch.mean(target)
-    ss_tot = torch.sum((target - target_mean) ** 2)
-    ss_res = torch.sum((target - output) ** 2)
-    r2 = 1 - ss_res / ss_tot
-    return r2
+# def r2_loss(output, target):
+#     target_mean = torch.mean(target)
+#     ss_tot = torch.sum((target - target_mean) ** 2)
+#     ss_res = torch.sum((target - output) ** 2)
+#     r2 = 1 - ss_res / ss_tot
+#     return r2
 
 
-# In[274]:
+# # In[274]:
 
 
-ty = torch.from_numpy(y[-2000:])
-r2_loss(out, torch.from_numpy(y[-2000:]))
+# ty = torch.from_numpy(y[-2000:])
+# r2_loss(out, torch.from_numpy(y[-2000:]))
 
 
 # SVM
@@ -566,78 +531,78 @@ r2_loss(out, torch.from_numpy(y[-2000:]))
 # In[17]:
 
 
-k = 10
-kf = KFold(n_splits=k, random_state=None)
+# k = 10
+# kf = KFold(n_splits=k, random_state=None)
 
-avg_acc = []
-model = svm.SVC()
-acc_score = []
-
-
-# In[84]:
+# avg_acc = []
+# model = svm.SVC()
+# acc_score = []
 
 
-for train_index , test_index in kf.split(X_new):
-    X_train , X_test = X_new[train_index,:],X_new[test_index,:]
-    y_train , y_test = y[train_index] , y[test_index]
-
-    model.fit(X_train,y_train)
-    pred_values = model.predict(X_test)
-
-    acc = np.sqrt(mean_squared_error(pred_values , y_test))
-    acc_score.append(acc)
-
-avg_acc_score = sum(acc_score)/k
-avg_acc.append(avg_acc_score)
+# # In[84]:
 
 
-# In[85]:
+# for train_index , test_index in kf.split(X_new):
+#     X_train , X_test = X_new[train_index,:],X_new[test_index,:]
+#     y_train , y_test = y[train_index] , y[test_index]
+
+#     model.fit(X_train,y_train)
+#     pred_values = model.predict(X_test)
+
+#     acc = np.sqrt(mean_squared_error(pred_values , y_test))
+#     acc_score.append(acc)
+
+# avg_acc_score = sum(acc_score)/k
+# avg_acc.append(avg_acc_score)
 
 
-avg_acc
+# # In[85]:
 
 
-# Alles false setzen
-
-# In[86]:
+# avg_acc
 
 
-1-y.sum()/y.size
+# # Alles false setzen
+
+# # In[86]:
 
 
-# Neue Features
-# ---
-# Zähle wieviele Male, dass ein Test gemacht wurde und nutze diese Matrix
-
-# In[20]:
+# 1-y.sum()/y.size
 
 
-train_feat_regroup = train_feat.groupby('pid').agg(lambda x: x.count()).reset_index()
+# # Neue Features
+# # ---
+# # Zähle wieviele Male, dass ein Test gemacht wurde und nutze diese Matrix
+
+# # In[20]:
 
 
-# In[21]:
+# train_feat_regroup = train_feat.groupby('pid').agg(lambda x: x.count()).reset_index()
 
 
-train_feat_regroup.pop("Age")
-train_feat_regroup.pop("Time")
+# # In[21]:
 
 
-# In[22]:
+# train_feat_regroup.pop("Age")
+# train_feat_regroup.pop("Time")
 
 
-train_feat_regroup.pop("pid")
+# # In[22]:
 
 
-# In[23]:
+# train_feat_regroup.pop("pid")
 
 
-train_feat_regroup
+# # In[23]:
 
 
-# In[24]:
+# train_feat_regroup
 
 
-train_feat_regroupNP = train_feat_regroup.to_numpy()
+# # In[24]:
+
+
+# train_feat_regroupNP = train_feat_regroup.to_numpy()
 
 
 # SVM 10 CV
@@ -645,85 +610,85 @@ train_feat_regroupNP = train_feat_regroup.to_numpy()
 # In[53]:
 
 
-from sklearn.metrics import r2_score
-k = 10
-kf = KFold(n_splits=k, random_state=None)
+# from sklearn.metrics import r2_score
+# k = 10
+# kf = KFold(n_splits=k, random_state=None)
 
-avg_acc = []
-#model = svm.SVC()
-acc_score = []
+# avg_acc = []
+# #model = svm.SVC()
+# acc_score = []
 
-y = labels[:, 0] #try to predict one label
-
-
-# In[63]:
+# y = labels[:, 0] #try to predict one label
 
 
-for train_index , test_index in kf.split(train_feat_regroup):
-    model = svm.SVC()
-    X_train , X_test = train_feat_regroupNP[train_index,:], train_feat_regroupNP[test_index,:]
-    #X_train , X_test = train_feat_new2[train_index,:], train_feat_new2[test_index,:]
-    y_train , y_test = y[train_index] , y[test_index]
-
-    model.fit(X_train,y_train)
-    pred_values = model.predict(X_test)
-
-    #acc = np.sqrt(mean_squared_error(pred_values , y_test))
-    acc = r2_score(y_test, pred_values)
-    acc_score.append(acc)
-
-avg_acc_score = sum(acc_score)/k
-avg_acc.append(avg_acc_score)
+# # In[63]:
 
 
-# In[64]:
+# for train_index , test_index in kf.split(train_feat_regroup):
+#     model = svm.SVC()
+#     X_train , X_test = train_feat_regroupNP[train_index,:], train_feat_regroupNP[test_index,:]
+#     #X_train , X_test = train_feat_new2[train_index,:], train_feat_new2[test_index,:]
+#     y_train , y_test = y[train_index] , y[test_index]
+
+#     model.fit(X_train,y_train)
+#     pred_values = model.predict(X_test)
+
+#     #acc = np.sqrt(mean_squared_error(pred_values , y_test))
+#     acc = r2_score(y_test, pred_values)
+#     acc_score.append(acc)
+
+# avg_acc_score = sum(acc_score)/k
+# avg_acc.append(avg_acc_score)
 
 
-acc_score
+# # In[64]:
 
 
-# In[65]:
+# acc_score
 
 
-avg_acc
+# # In[65]:
 
 
-# In[66]:
+# avg_acc
 
 
-from sklearn.metrics import RocCurveDisplay
-y_pred = model.decision_function(X_test)
-RocCurveDisplay.from_predictions(y_test, y_pred)
-plt.show()
+# # In[66]:
 
 
-# In[39]:
+# from sklearn.metrics import RocCurveDisplay
+# y_pred = model.decision_function(X_test)
+# RocCurveDisplay.from_predictions(y_test, y_pred)
+# plt.show()
 
 
-from sklearn.metrics import roc_auc_score
-y_pred = model.decision_function(X_test)
-roc_auc_score(y_test, y_pred)
+# # In[39]:
 
 
-# In[40]:
+# from sklearn.metrics import roc_auc_score
+# y_pred = model.decision_function(X_test)
+# roc_auc_score(y_test, y_pred)
 
 
-import pickle
-
-# save
-with open('model.pkl','wb') as f:
-    pickle.dump(model,f)
+# # In[40]:
 
 
-# In[40]:
+# import pickle
+
+# # save
+# with open('model.pkl','wb') as f:
+#     pickle.dump(model,f)
 
 
-import pickle
-# load
-with open('model.pkl', 'rb') as f:
-    clf2 = pickle.load(f)
+# # In[40]:
 
-clf2.predict(train_feat_regroupNP[0:1])
+
+# import pickle
+# # load
+# with open('model.pkl', 'rb') as f:
+#     clf2 = pickle.load(f)
+
+# clf2.predict(train_feat_regroupNP[0:1])
 
 
 # Test other labels
@@ -731,105 +696,105 @@ clf2.predict(train_feat_regroupNP[0:1])
 # In[60]:
 
 
-from sklearn.metrics import r2_score
-k = 10
-kf = KFold(n_splits=k, random_state=None)
+# from sklearn.metrics import r2_score
+# k = 10
+# kf = KFold(n_splits=k, random_state=None)
 
-avg_acc = []
-#model = svm.SVC()
-acc_score = []
+# avg_acc = []
+# #model = svm.SVC()
+# acc_score = []
 
-y = labels[:, 8] #try to predict one label
-
-
-# In[61]:
+# y = labels[:, 8] #try to predict one label
 
 
-for train_index , test_index in kf.split(train_feat_regroup):
-    model = svm.SVC()
-    X_train , X_test = train_feat_regroupNP[train_index,:], train_feat_regroupNP[test_index,:]
-    y_train , y_test = y[train_index] , y[test_index]
+# # In[61]:
 
-    model.fit(X_train,y_train)
-    pred_values = model.predict(X_test)
 
-    #acc = np.sqrt(mean_squared_error(pred_values , y_test))
-    acc = r2_score(y_test, pred_values)
-    acc_score.append(acc)
+# for train_index , test_index in kf.split(train_feat_regroup):
+#     model = svm.SVC()
+#     X_train , X_test = train_feat_regroupNP[train_index,:], train_feat_regroupNP[test_index,:]
+#     y_train , y_test = y[train_index] , y[test_index]
 
-avg_acc_score = sum(acc_score)/k
-avg_acc.append(avg_acc_score)
-acc_score
+#     model.fit(X_train,y_train)
+#     pred_values = model.predict(X_test)
+
+#     #acc = np.sqrt(mean_squared_error(pred_values , y_test))
+#     acc = r2_score(y_test, pred_values)
+#     acc_score.append(acc)
+
+# avg_acc_score = sum(acc_score)/k
+# avg_acc.append(avg_acc_score)
+# acc_score
 
 
 # In[62]:
 
 
-from sklearn.metrics import RocCurveDisplay
-y_pred = model.decision_function(X_test)
-RocCurveDisplay.from_predictions(y_test, y_pred)
-plt.show()
+# from sklearn.metrics import RocCurveDisplay
+# y_pred = model.decision_function(X_test)
+# RocCurveDisplay.from_predictions(y_test, y_pred)
+# plt.show()
 
 
-# In[63]:
+# # In[63]:
 
 
-from sklearn.metrics import roc_auc_score
-X_test = train_feat_regroup[:1000]
-y_test = labels[:1000, 4]
+# from sklearn.metrics import roc_auc_score
+# X_test = train_feat_regroup[:1000]
+# y_test = labels[:1000, 4]
 
-y_pred = model.predict(X_test)
-roc_auc_score(y_test, y_pred)
-
-
-# Make for multiple classes
-#     
-#         
-
-# In[28]:
+# y_pred = model.predict(X_test)
+# roc_auc_score(y_test, y_pred)
 
 
-from sklearn.multioutput import MultiOutputClassifier
-from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
-scaler.fit(train_feat_regroupNP)
-train_feat_regroupNP2 = scaler.transform(train_feat_regroupNP)
-y = labels[:,:10]
-model = MultiOutputClassifier(svm.SVC()).fit(train_feat_regroupNP2, y)
+# # Make for multiple classes
+# #     
+# #         
+
+# # In[28]:
 
 
-# In[29]:
+# from sklearn.multioutput import MultiOutputClassifier
+# from sklearn.preprocessing import StandardScaler
+# scaler = StandardScaler()
+# scaler.fit(train_feat_regroupNP)
+# train_feat_regroupNP2 = scaler.transform(train_feat_regroupNP)
+# y = labels[:,:10]
+# model = MultiOutputClassifier(svm.SVC()).fit(train_feat_regroupNP2, y)
 
 
-from sklearn.metrics import roc_auc_score
-X_test = train_feat_regroupNP2
-y_test = labels[:,:10]
-
-y_pred = model.predict(X_test)
-roc_auc_score(y_test, y_pred, average=None)
+# # In[29]:
 
 
-# In[53]:
+# from sklearn.metrics import roc_auc_score
+# X_test = train_feat_regroupNP2
+# y_test = labels[:,:10]
+
+# y_pred = model.predict(X_test)
+# roc_auc_score(y_test, y_pred, average=None)
 
 
-from sklearn.multioutput import MultiOutputClassifier
-from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
-scaler.fit(train_feat_new2)
-train_feat_new3 = scaler.transform(train_feat_new2)
-y = labels[:,:10]
-model = MultiOutputClassifier(svm.SVC()).fit(train_feat_new3, y)
+# # In[53]:
 
 
-# In[69]:
+# from sklearn.multioutput import MultiOutputClassifier
+# from sklearn.preprocessing import StandardScaler
+# scaler = StandardScaler()
+# scaler.fit(train_feat_new2)
+# train_feat_new3 = scaler.transform(train_feat_new2)
+# y = labels[:,:10]
+# model = MultiOutputClassifier(svm.SVC()).fit(train_feat_new3, y)
 
 
-from sklearn.metrics import roc_auc_score
-X_test = train_feat_new3
-y_test = labels[:,:10]
+# # In[69]:
 
-y_pred = model.predict(X_test)
-roc_auc_score(y_test, y_pred, average=None)
+
+# from sklearn.metrics import roc_auc_score
+# X_test = train_feat_new3
+# y_test = labels[:,:10]
+
+# y_pred = model.predict(X_test)
+# roc_auc_score(y_test, y_pred, average=None)
 
 
 # Histogram-based Gradient Boosting Classification Tree.
@@ -837,17 +802,17 @@ roc_auc_score(y_test, y_pred, average=None)
 # In[74]:
 
 
-from sklearn.ensemble import HistGradientBoostingClassifier
-from sklearn.metrics import RocCurveDisplay
+# from sklearn.ensemble import HistGradientBoostingClassifier
+# from sklearn.metrics import RocCurveDisplay
 
-y = labels[2000:, 0]
-X = train_feat_new3[2000:]
-clf = HistGradientBoostingClassifier(random_state=0)
-clf.fit(X, y)
+# y = labels[2000:, 0]
+# X = train_feat_new3[2000:]
+# clf = HistGradientBoostingClassifier(random_state=0)
+# clf.fit(X, y)
 
-y_pred = clf.predict_proba(train_feat_new3[:2000])[:,1]
-RocCurveDisplay.from_predictions(labels[:2000, 0], y_pred)
-plt.show()
+# y_pred = clf.predict_proba(train_feat_new3[:2000])[:,1]
+# RocCurveDisplay.from_predictions(labels[:2000, 0], y_pred)
+# plt.show()
 
 
 # In[81]:
@@ -875,7 +840,7 @@ y_pred = model.predict_proba(X_test)
 y_pred = np.asarray(y_pred)
 y_pred = y_pred[:,:,1]
 y_pred = np.transpose(y_pred)
-roc_auc_score(y_test, y_pred, average=None)
+print(roc_auc_score(y_test, y_pred, average=None))
 
 
 # In[83]:
@@ -903,7 +868,7 @@ for name in ['LABEL_BaseExcess','LABEL_Fibrinogen','LABEL_AST','LABEL_Alkalineph
 # In[86]:
 
 
-Abgabe
+# Abgabe
 #ist das korrekt oder müsste es eine 0/1 klassifizierung sein?
 
 
@@ -912,28 +877,28 @@ Abgabe
 # In[149]:
 
 
-from sklearn.preprocessing import StandardScaler
-scaler = StandardScaler()
-scaler.fit(train_feat_new2MEDIAN)
-train_feat_new3MEDIAN = scaler.transform(train_feat_new2MEDIAN)train_feat_new3MEDIAN
+# from sklearn.preprocessing import StandardScaler
+# scaler = StandardScaler()
+# scaler.fit(train_feat_new2MEDIAN)
+# train_feat_new3MEDIAN = scaler.transform(train_feat_new2MEDIAN)train_feat_new3MEDIAN
 
 
-# In[150]:
+# # In[150]:
 
 
-from sklearn.metrics import roc_auc_score
-from sklearn.multioutput import MultiOutputClassifier
-y = labels[:,:10]
-model = MultiOutputClassifier(clf).fit(train_feat_new3MEDIAN, y)
+# from sklearn.metrics import roc_auc_score
+# from sklearn.multioutput import MultiOutputClassifier
+# y = labels[:,:10]
+# model = MultiOutputClassifier(clf).fit(train_feat_new3MEDIAN, y)
 
-X_test = train_feat_new3MEDIAN
-y_test = labels[:,:10]
+# X_test = train_feat_new3MEDIAN
+# y_test = labels[:,:10]
 
-y_pred = model.predict_proba(X_test)
-y_pred = np.asarray(y_pred)
-y_pred = y_pred[:,:,1]
-y_pred = np.transpose(y_pred)
-roc_auc_score(y_test, y_pred, average=None)
+# y_pred = model.predict_proba(X_test)
+# y_pred = np.asarray(y_pred)
+# y_pred = y_pred[:,:,1]
+# y_pred = np.transpose(y_pred)
+# roc_auc_score(y_test, y_pred, average=None)
 
 
 # Subtask 2
@@ -943,32 +908,32 @@ roc_auc_score(y_test, y_pred, average=None)
 # In[90]:
 
 
-from sklearn.model_selection import cross_val_score
-from sklearn.tree import DecisionTreeClassifier
-clf = DecisionTreeClassifier(random_state=0, class_weight="balanced")
-model2 = svm.SVC(random_state=0, class_weight="balanced")
-cross_val_score(clf, train_feat_regroupNP, labels[:,10],  cv=10)
+# from sklearn.model_selection import cross_val_score
+# from sklearn.tree import DecisionTreeClassifier
+# clf = DecisionTreeClassifier(random_state=0, class_weight="balanced")
+# model2 = svm.SVC(random_state=0, class_weight="balanced")
+# cross_val_score(clf, train_feat_regroupNP, labels[:,10],  cv=10)
 
 
-# In[91]:
+# # In[91]:
 
 
-clf.fit(train_feat_regroupNP[1000:], labels[1000:,10])
+# clf.fit(train_feat_regroupNP[1000:], labels[1000:,10])
 
 
-# In[92]:
+# # In[92]:
 
 
-model2.fit(train_feat_regroupNP[1000:], labels[1000:,10])
+# model2.fit(train_feat_regroupNP[1000:], labels[1000:,10])
 
 
-# In[99]:
+# # In[99]:
 
 
-from sklearn.metrics import RocCurveDisplay
-y_pred = model2.predict(train_feat_regroupNP[:1000])
-RocCurveDisplay.from_predictions(labels[:1000,10], y_pred)
-plt.show()
+# from sklearn.metrics import RocCurveDisplay
+# y_pred = model2.predict(train_feat_regroupNP[:1000])
+# RocCurveDisplay.from_predictions(labels[:1000,10], y_pred)
+# plt.show()
 
 
 # try with more features and HistGradientBoostingClassifier
@@ -1019,7 +984,7 @@ for name in ['LABEL_Sepsis']:
 # In[90]:
 
 
-Abgabe
+# Abgabe
 
 
 # Againg with Median Imputing
@@ -1027,29 +992,29 @@ Abgabe
 # In[151]:
 
 
-from sklearn.ensemble import HistGradientBoostingClassifier
-from sklearn.metrics import RocCurveDisplay
-from sklearn.utils.class_weight import compute_class_weight
+# from sklearn.ensemble import HistGradientBoostingClassifier
+# from sklearn.metrics import RocCurveDisplay
+# from sklearn.utils.class_weight import compute_class_weight
 
 
-y = labels[2000:, 10]
-wheights = compute_class_weight(class_weight="balanced", classes= [0,1], y=y)
-print(wheights)
-wheights_data = []
-for i in range(16995):
-    if y[i] == 0.0:
-        wheights_data.append(wheights[0])
-    else:
-        wheights_data.append(wheights[1])
-#print(wheights_data)
+# y = labels[2000:, 10]
+# wheights = compute_class_weight(class_weight="balanced", classes= [0,1], y=y)
+# print(wheights)
+# wheights_data = []
+# for i in range(16995):
+#     if y[i] == 0.0:
+#         wheights_data.append(wheights[0])
+#     else:
+#         wheights_data.append(wheights[1])
+# #print(wheights_data)
 
-X = train_feat_new3MEDIAN[2000:]
-clf = HistGradientBoostingClassifier(random_state=0)
-clf.fit(X, y, sample_weight =wheights_data)
+# X = train_feat_new3MEDIAN[2000:]
+# clf = HistGradientBoostingClassifier(random_state=0)
+# clf.fit(X, y, sample_weight =wheights_data)
 
-y_pred = clf.predict_proba(train_feat_new3MEDIAN[:2000])[:,1]
-RocCurveDisplay.from_predictions(labels[:2000, 10], y_pred)
-plt.show()
+# y_pred = clf.predict_proba(train_feat_new3MEDIAN[:2000])[:,1]
+# RocCurveDisplay.from_predictions(labels[:2000, 10], y_pred)
+# plt.show()
 
 
 # Subtask 3
@@ -1060,435 +1025,435 @@ plt.show()
 # In[92]:
 
 
-addi_feat = train_feat[['Heartrate','ABPs', 'SpO2' , 'RRate']].to_numpy
-addi_feat
+# addi_feat = train_feat[['Heartrate','ABPs', 'SpO2' , 'RRate']].to_numpy
+# addi_feat
 
 
-# In[89]:
+# # In[89]:
 
 
-train_feat[['Heartrate','ABPs', 'SpO2' , 'RRate']]
+# train_feat[['Heartrate','ABPs', 'SpO2' , 'RRate']]
 
 
-# In[158]:
+# # In[158]:
 
 
-tf2 = train_feat.interpolate(method='linear', limit_direction="both")
-tf2
+# tf2 = train_feat.interpolate(method='linear', limit_direction="both")
+# tf2
 
 
-# In[357]:
+# # In[357]:
 
 
-tfH = (tf2.groupby(['pid'])['Heartrate']).apply(list).reset_index()
-tfH.pop("pid")
-tfA = tf2.groupby(['pid'])['ABPs'].apply(list).reset_index()
-tfA.pop("pid")
-tfS = tf2.groupby(['pid'])['SpO2'].apply(list).reset_index()
-tfS.pop("pid")
-tfR = tf2.groupby(['pid'])['RRate'].apply(list).reset_index()
-tfR.pop("pid")
+# tfH = (tf2.groupby(['pid'])['Heartrate']).apply(list).reset_index()
+# tfH.pop("pid")
+# tfA = tf2.groupby(['pid'])['ABPs'].apply(list).reset_index()
+# tfA.pop("pid")
+# tfS = tf2.groupby(['pid'])['SpO2'].apply(list).reset_index()
+# tfS.pop("pid")
+# tfR = tf2.groupby(['pid'])['RRate'].apply(list).reset_index()
+# tfR.pop("pid")
 
-tfH = tfH.to_numpy()
-tfA = tfA.to_numpy()
-tfS = tfS.to_numpy()
-tfR = tfR.to_numpy()
+# tfH = tfH.to_numpy()
+# tfA = tfA.to_numpy()
+# tfS = tfS.to_numpy()
+# tfR = tfR.to_numpy()
 
-tf = np.concatenate((tfH, tfA, tfS, tfR), axis=1)
-tf.shape
-
-
-# In[359]:
+# tf = np.concatenate((tfH, tfA, tfS, tfR), axis=1)
+# tf.shape
 
 
-tf = tf.tolist()
-tf = np.asarray(tf)
-tf.shape
+# # In[359]:
 
 
-# In[122]:
+# tf = tf.tolist()
+# tf = np.asarray(tf)
+# tf.shape
 
 
-#df['ABPs'].interpolate(method='linear', inplace=True, limit_direction="both")
+# # In[122]:
 
 
-# In[360]:
+# #df['ABPs'].interpolate(method='linear', inplace=True, limit_direction="both")
 
 
-fulltfNP = np.empty((18995,0))
-for name, values in tf2.iteritems():
-    print(name)
-    if(name == 'pid' or name == 'Time' or name == 'Age'):
-        continue
+# # In[360]:
+
+
+# fulltfNP = np.empty((18995,0))
+# for name, values in tf2.iteritems():
+#     print(name)
+#     if(name == 'pid' or name == 'Time' or name == 'Age'):
+#         continue
     
-    nparr = tf2.groupby(['pid'])[name].apply(list).reset_index()
-    nparr.pop("pid")
-    nparr = nparr.to_numpy()
-    #print(fulltfNP.shape)
-    #print(nparr.shape)
-    fulltfNP = np.concatenate((fulltfNP, nparr), axis=1)
+#     nparr = tf2.groupby(['pid'])[name].apply(list).reset_index()
+#     nparr.pop("pid")
+#     nparr = nparr.to_numpy()
+#     #print(fulltfNP.shape)
+#     #print(nparr.shape)
+#     fulltfNP = np.concatenate((fulltfNP, nparr), axis=1)
 
-fulltf = fulltfNP.tolist()
-fulltf = np.asarray(fulltf)
-fulltf.shape
-
-
-# Model
-
-# In[366]:
+# fulltf = fulltfNP.tolist()
+# fulltf = np.asarray(fulltf)
+# fulltf.shape
 
 
-class CNNfull(nn.Module):
-    def __init__(self, out_Dim):
-        super(CNNfull, self).__init__()
+# # Model
+
+# # In[366]:
+
+
+# class CNNfull(nn.Module):
+#     def __init__(self, out_Dim):
+#         super(CNNfull, self).__init__()
         
-        self.conv1 = nn.Conv1d(34, 64, kernel_size=3, stride=2, padding=1)  # 12 x 1
-        self.conv2 = nn.Conv1d(64, 128, kernel_size=2, stride=2, padding=1)  # 6 x 1 -> 4x1
-        self.conv3 = nn.Conv1d(128, 128, kernel_size=3, stride=2, padding=1)  # 4 x 1 -> 2x1
+#         self.conv1 = nn.Conv1d(34, 64, kernel_size=3, stride=2, padding=1)  # 12 x 1
+#         self.conv2 = nn.Conv1d(64, 128, kernel_size=2, stride=2, padding=1)  # 6 x 1 -> 4x1
+#         self.conv3 = nn.Conv1d(128, 128, kernel_size=3, stride=2, padding=1)  # 4 x 1 -> 2x1
         
-        self.lin0 = nn.Linear(in_features=256, out_features=1024)
-        self.lin1 = nn.Linear(in_features=1024, out_features=out_Dim)
+#         self.lin0 = nn.Linear(in_features=256, out_features=1024)
+#         self.lin1 = nn.Linear(in_features=1024, out_features=out_Dim)
         
-        self.act = nn.ReLU(inplace=True)
+#         self.act = nn.ReLU(inplace=True)
         
  
-    def forward(self, x):
-        #print(f"inp conv: {x.size()}")
-        x = self.conv1(x)
-        #print(f"conv1: {x.size()}")
-        x = self.act(x)
-        x = self.conv2(x)
-        #print(f"conv2: {x.size()}")
-        x = self.act(x)
-        x = self.act(self.conv3(x)).view(-1, 256)
-        #print(f"conv3: {x.size()}")
-        x = self.act(self.lin0(x))
-        values = self.act(self.lin1(x))
-        return values
+#     def forward(self, x):
+#         #print(f"inp conv: {x.size()}")
+#         x = self.conv1(x)
+#         #print(f"conv1: {x.size()}")
+#         x = self.act(x)
+#         x = self.conv2(x)
+#         #print(f"conv2: {x.size()}")
+#         x = self.act(x)
+#         x = self.act(self.conv3(x)).view(-1, 256)
+#         #print(f"conv3: {x.size()}")
+#         x = self.act(self.lin0(x))
+#         values = self.act(self.lin1(x))
+#         return values
 
 
-# In[309]:
+# # In[309]:
 
 
-class CNN(nn.Module):
-    def __init__(self):
-        super(CNN, self).__init__()
+# class CNN(nn.Module):
+#     def __init__(self):
+#         super(CNN, self).__init__()
         
-        self.conv1 = nn.Conv1d(4, 32, kernel_size=3, stride=2, padding=1)  # 12 x 1
-        self.conv2 = nn.Conv1d(32, 32, kernel_size=2, stride=2, padding=1)  # 6 x 1 -> 4x1
-        self.conv3 = nn.Conv1d(32, 32, kernel_size=3, stride=2, padding=1)  # 4 x 1 -> 2x1
+#         self.conv1 = nn.Conv1d(4, 32, kernel_size=3, stride=2, padding=1)  # 12 x 1
+#         self.conv2 = nn.Conv1d(32, 32, kernel_size=2, stride=2, padding=1)  # 6 x 1 -> 4x1
+#         self.conv3 = nn.Conv1d(32, 32, kernel_size=3, stride=2, padding=1)  # 4 x 1 -> 2x1
         
-        self.act = nn.ReLU(inplace=True)
+#         self.act = nn.ReLU(inplace=True)
         
  
-    def forward(self, x):
-        #print(f"inp conv: {x.size()}")
-        x = self.conv1(x)
-        #print(f"conv1: {x.size()}")
-        x = self.act(x)
-        x = self.conv2(x)
-        #print(f"conv2: {x.size()}")
-        x = self.act(x)
-        values = self.act(self.conv3(x))
-        #print(f"conv3: {values.size()}")
-        return values
+#     def forward(self, x):
+#         #print(f"inp conv: {x.size()}")
+#         x = self.conv1(x)
+#         #print(f"conv1: {x.size()}")
+#         x = self.act(x)
+#         x = self.conv2(x)
+#         #print(f"conv2: {x.size()}")
+#         x = self.act(x)
+#         values = self.act(self.conv3(x))
+#         #print(f"conv3: {values.size()}")
+#         return values
 
 
-# In[328]:
+# # In[328]:
 
 
-class Net(nn.Module):
-    def __init__(self, in_Dim, out_Dim):
-        super(Net, self).__init__()
+# class Net(nn.Module):
+#     def __init__(self, in_Dim, out_Dim):
+#         super(Net, self).__init__()
         
-        self.cnn = CNN()
+#         self.cnn = CNN()
         
-        self.lin0 = nn.Linear(in_features=in_Dim, out_features=1024)
-        self.lin1 = nn.Linear(in_features=1024, out_features=out_Dim)
+#         self.lin0 = nn.Linear(in_features=in_Dim, out_features=1024)
+#         self.lin1 = nn.Linear(in_features=1024, out_features=out_Dim)
         
-        self.act = nn.ReLU(inplace=True)
+#         self.act = nn.ReLU(inplace=True)
 
         
-    def forward(self, x4, xRest):
+#     def forward(self, x4, xRest):
         
-        c = self.cnn(x4).view(-1, 64)
-        #print(f"c: {c.size()}")
-        x = torch.cat((xRest, c), axis=1)
-        x = self.lin0(x)
-        x = self.act(x)
-        return self.lin1(x)
+#         c = self.cnn(x4).view(-1, 64)
+#         #print(f"c: {c.size()}")
+#         x = torch.cat((xRest, c), axis=1)
+#         x = self.lin0(x)
+#         x = self.act(x)
+#         return self.lin1(x)
 
 
-# In[329]:
+# # In[329]:
 
 
-epochs = 12
-batch_size = 64
-lr = 0.0001
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+# epochs = 12
+# batch_size = 64
+# lr = 0.0001
+# device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-# In[367]:
+# # In[367]:
 
 
-#model = Net(94, 1).to(device) #labels.shape[1] ).to(device)
-model = CNNfull(1).to(device)
-print(model)
+# #model = Net(94, 1).to(device) #labels.shape[1] ).to(device)
+# model = CNNfull(1).to(device)
+# print(model)
 
 
-# In[368]:
+# # In[368]:
 
 
-opt = optim.Adam(model.parameters(), lr=lr)
-loss = nn.MSELoss()
+# opt = optim.Adam(model.parameters(), lr=lr)
+# loss = nn.MSELoss()
 
 
-# In[276]:
+# # In[276]:
 
 
-y = labels[:, -1] #try to predict one label (heartrate)
+# y = labels[:, -1] #try to predict one label (heartrate)
 
 
-# In[300]:
+# # In[300]:
 
 
-train_data4 = tf[:-2000]
-val_data4 = tf[-2000:]
+# train_data4 = tf[:-2000]
+# val_data4 = tf[-2000:]
 
-train_data = train_feat_regroup.loc[ : , train_feat_regroup.columns != 'Heartrate']
-train_data = train_data.loc[ : , train_data.columns != 'ABPs']
-train_data = train_data.loc[ : , train_data.columns != 'SpO2']
-train_data = train_data.loc[ : , train_data.columns != 'RRate'].to_numpy()
-train_dataRest = train_data[:-2000]
-val_dataRest = train_data[-2000:]
-print(len(train_data4))
-print(len(train_dataRest))
-
-
-train_data4 = train_data4.astype(dtype=np.float32)
-val_data4 = val_data4.astype(dtype=np.float32)
-train_dataRest = train_dataRest.astype(dtype=np.float32)
-val_dataRest = val_dataRest.astype(dtype=np.float32)
-
-y = y.astype(dtype=np.float32)
-print(train_data4.dtype)
-print(val_data4.dtype)
+# train_data = train_feat_regroup.loc[ : , train_feat_regroup.columns != 'Heartrate']
+# train_data = train_data.loc[ : , train_data.columns != 'ABPs']
+# train_data = train_data.loc[ : , train_data.columns != 'SpO2']
+# train_data = train_data.loc[ : , train_data.columns != 'RRate'].to_numpy()
+# train_dataRest = train_data[:-2000]
+# val_dataRest = train_data[-2000:]
+# print(len(train_data4))
+# print(len(train_dataRest))
 
 
-# In[267]:
+# train_data4 = train_data4.astype(dtype=np.float32)
+# val_data4 = val_data4.astype(dtype=np.float32)
+# train_dataRest = train_dataRest.astype(dtype=np.float32)
+# val_dataRest = val_dataRest.astype(dtype=np.float32)
+
+# y = y.astype(dtype=np.float32)
+# print(train_data4.dtype)
+# print(val_data4.dtype)
 
 
-def fit(model, X4, XRest, labels, loss):
-    X4.to(device)
-    XRest.to(device)
-    labels.to(device)
-    model.train
-    running_loss = 0.0
-    indexEnd = 64
-    indexStart = 0
-    train_loss = []
+# # In[267]:
+
+
+# def fit(model, X4, XRest, labels, loss):
+#     X4.to(device)
+#     XRest.to(device)
+#     labels.to(device)
+#     model.train
+#     running_loss = 0.0
+#     indexEnd = 64
+#     indexStart = 0
+#     train_loss = []
    
-    while (True):
-        X4t = X4[indexStart:indexEnd]
-        XRestt = XRest[indexStart:indexEnd]
-        #print(f"X4: {X4t.size()}")
-        #print(f"XRestt: {XRestt.size()}")
+#     while (True):
+#         X4t = X4[indexStart:indexEnd]
+#         XRestt = XRest[indexStart:indexEnd]
+#         #print(f"X4: {X4t.size()}")
+#         #print(f"XRestt: {XRestt.size()}")
         
-        opt.zero_grad()
+#         opt.zero_grad()
 
-        inp = model(X4t, XRestt)        
+#         inp = model(X4t, XRestt)        
 
-        output = loss(inp, labels)
+#         output = loss(inp, labels)
 
-        #running_loss += output.item()
-        output.backward()
-        train_loss.append(output.item())
-        #for param in model.parameters():    
-            #param.grad = torch.nan_to_num(param.grad, nan=0.0, posinf=None, neginf=None)
-            #print(param.grad)
+#         #running_loss += output.item()
+#         output.backward()
+#         train_loss.append(output.item())
+#         #for param in model.parameters():    
+#             #param.grad = torch.nan_to_num(param.grad, nan=0.0, posinf=None, neginf=None)
+#             #print(param.grad)
 
-        opt.step()
+#         opt.step()
         
         
-        if(not(indexEnd < XRest.size(0)-1)):
-            break;
-        indexEnd += 64
-        indexStart += 64
-        indexEnd = min(indexEnd, XRest.size(0)-1)
+#         if(not(indexEnd < XRest.size(0)-1)):
+#             break;
+#         indexEnd += 64
+#         indexStart += 64
+#         indexEnd = min(indexEnd, XRest.size(0)-1)
         
     
-    return np.array(train_loss).mean()
+#     return np.array(train_loss).mean()
 
 
-# In[374]:
+# # In[374]:
 
 
-def validate(model, X4, XRest, labels, loss):
-    X4.to(device)
-    XRest.to(device)
-    labels.to(device)
-    model.eval()
-    running_loss = 0.0
-    val_loss = []
+# def validate(model, X4, XRest, labels, loss):
+#     X4.to(device)
+#     XRest.to(device)
+#     labels.to(device)
+#     model.eval()
+#     running_loss = 0.0
+#     val_loss = []
     
-    with torch.no_grad():
-        #for i in range(len(labels)):
+#     with torch.no_grad():
+#         #for i in range(len(labels)):
        
-        opt.zero_grad()
+#         opt.zero_grad()
 
-        inp = model(X4, XRest)        
+#         inp = model(X4, XRest)        
 
-        output = loss(inp, labels)
+#         output = loss(inp, labels)
 
-        #running_loss += output.item()
-        val_loss.append(output.item())
+#         #running_loss += output.item()
+#         val_loss.append(output.item())
         
-    return np.array(val_loss).mean()
+#     return np.array(val_loss).mean()
 
 
-# In[327]:
+# # In[327]:
 
 
-train_loss = []
-val_loss = []
-torch.backends.cudnn.benchmark = True #choose best kernel for computation
+# train_loss = []
+# val_loss = []
+# torch.backends.cudnn.benchmark = True #choose best kernel for computation
 
-for epoch in range(epochs):
-    print(f"Epoch {epoch+1} of {epochs}")
+# for epoch in range(epochs):
+#     print(f"Epoch {epoch+1} of {epochs}")
 
-    train_epoch_loss = fit(model, torch.from_numpy(train_data4), torch.from_numpy(train_dataRest), torch.from_numpy(y[:-2000]), loss)
-    val_epoch_loss = validate(model, torch.from_numpy(val_data4), torch.from_numpy(val_dataRest), torch.from_numpy(y[-2000:]), loss)
+#     train_epoch_loss = fit(model, torch.from_numpy(train_data4), torch.from_numpy(train_dataRest), torch.from_numpy(y[:-2000]), loss)
+#     val_epoch_loss = validate(model, torch.from_numpy(val_data4), torch.from_numpy(val_dataRest), torch.from_numpy(y[-2000:]), loss)
     
-    train_loss.append(train_epoch_loss)
-    val_loss.append(val_epoch_loss)
-    print(f"Train Loss: {train_epoch_loss:.4f}")
-    print(f"Val Loss: {val_epoch_loss:.4f}")
+#     train_loss.append(train_epoch_loss)
+#     val_loss.append(val_epoch_loss)
+#     print(f"Train Loss: {train_epoch_loss:.4f}")
+#     print(f"Val Loss: {val_epoch_loss:.4f}")
 
 
-# In[333]:
+# # In[333]:
 
 
-testIndex = 10
-testData4, testDataRest = torch.from_numpy(train_data4[testIndex]), torch.from_numpy(train_dataRest[testIndex])
-testData4, testDataRest = testData4[None,:,:], testDataRest[None,:]
-#print(testData4.size())
-inp = model(testData4, testDataRest) 
-print(f"inp: {inp}")
-print(f"groundtruth: {y[testIndex]}")
+# testIndex = 10
+# testData4, testDataRest = torch.from_numpy(train_data4[testIndex]), torch.from_numpy(train_dataRest[testIndex])
+# testData4, testDataRest = testData4[None,:,:], testDataRest[None,:]
+# #print(testData4.size())
+# inp = model(testData4, testDataRest) 
+# print(f"inp: {inp}")
+# print(f"groundtruth: {y[testIndex]}")
 
 
-# In[ ]:
+# # In[ ]:
 
 
 
 
 
-# In[369]:
+# # In[369]:
 
 
-train_dataFull = fulltf[:-2000]
-val_dataFull = fulltf[-2000:]
-train_dataFull = train_dataFull.astype(dtype=np.float32)
-val_dataFull = val_dataFull.astype(dtype=np.float32)
-y = y.astype(dtype=np.float32)
+# train_dataFull = fulltf[:-2000]
+# val_dataFull = fulltf[-2000:]
+# train_dataFull = train_dataFull.astype(dtype=np.float32)
+# val_dataFull = val_dataFull.astype(dtype=np.float32)
+# y = y.astype(dtype=np.float32)
 
 
-# In[370]:
+# # In[370]:
 
 
-def fitFull(model, X, labels, loss):
-    X.to(device)
-    labels.to(device)
-    model.train
-    running_loss = 0.0
-    indexEnd = 64
-    indexStart = 0
-    train_loss = []
+# def fitFull(model, X, labels, loss):
+#     X.to(device)
+#     labels.to(device)
+#     model.train
+#     running_loss = 0.0
+#     indexEnd = 64
+#     indexStart = 0
+#     train_loss = []
    
-    while (True):
-        Xt = X[indexStart:indexEnd]
-        #print(f"X: {X.size()}")
+#     while (True):
+#         Xt = X[indexStart:indexEnd]
+#         #print(f"X: {X.size()}")
         
-        opt.zero_grad()
+#         opt.zero_grad()
 
-        inp = model(Xt)        
+#         inp = model(Xt)        
 
-        output = loss(inp, labels)
+#         output = loss(inp, labels)
 
-        #running_loss += output.item()
-        output.backward()
-        train_loss.append(output.item())
-        #for param in model.parameters():    
-            #param.grad = torch.nan_to_num(param.grad, nan=0.0, posinf=None, neginf=None)
-            #print(param.grad)
+#         #running_loss += output.item()
+#         output.backward()
+#         train_loss.append(output.item())
+#         #for param in model.parameters():    
+#             #param.grad = torch.nan_to_num(param.grad, nan=0.0, posinf=None, neginf=None)
+#             #print(param.grad)
 
-        opt.step()
+#         opt.step()
         
         
-        if(not(indexEnd < X.size(0)-1)):
-            break;
-        indexEnd += 64
-        indexStart += 64
-        indexEnd = min(indexEnd, X.size(0)-1)
+#         if(not(indexEnd < X.size(0)-1)):
+#             break;
+#         indexEnd += 64
+#         indexStart += 64
+#         indexEnd = min(indexEnd, X.size(0)-1)
         
     
-    return np.array(train_loss).mean()
+#     return np.array(train_loss).mean()
 
 
-# In[373]:
+# # In[373]:
 
 
-def validateFull(model, X, labels, loss):
-    X.to(device)
-    labels.to(device)
-    model.eval()
-    running_loss = 0.0
-    val_loss = []
+# def validateFull(model, X, labels, loss):
+#     X.to(device)
+#     labels.to(device)
+#     model.eval()
+#     running_loss = 0.0
+#     val_loss = []
     
-    with torch.no_grad():
-        #for i in range(len(labels)):
+#     with torch.no_grad():
+#         #for i in range(len(labels)):
        
-        opt.zero_grad()
+#         opt.zero_grad()
 
-        inp = model(X)        
+#         inp = model(X)        
 
-        output = loss(inp, labels)
+#         output = loss(inp, labels)
 
-        #running_loss += output.item()
-        val_loss.append(output.item())
+#         #running_loss += output.item()
+#         val_loss.append(output.item())
         
-    return np.array(val_loss).mean()
+#     return np.array(val_loss).mean()
 
 
-# In[375]:
+# # In[375]:
 
 
-train_loss = []
-val_loss = []
-torch.backends.cudnn.benchmark = True #choose best kernel for computation
+# train_loss = []
+# val_loss = []
+# torch.backends.cudnn.benchmark = True #choose best kernel for computation
 
-for epoch in range(epochs):
-    print(f"Epoch {epoch+1} of {epochs}")
+# for epoch in range(epochs):
+#     print(f"Epoch {epoch+1} of {epochs}")
 
-    train_epoch_loss = fitFull(model, torch.from_numpy(train_dataFull), torch.from_numpy(y[:-2000]), loss)
-    val_epoch_loss = validateFull(model, torch.from_numpy(val_dataFull), torch.from_numpy(y[-2000:]), loss)
+#     train_epoch_loss = fitFull(model, torch.from_numpy(train_dataFull), torch.from_numpy(y[:-2000]), loss)
+#     val_epoch_loss = validateFull(model, torch.from_numpy(val_dataFull), torch.from_numpy(y[-2000:]), loss)
     
-    train_loss.append(train_epoch_loss)
-    val_loss.append(val_epoch_loss)
-    print(f"Train Loss: {train_epoch_loss:.4f}")
-    print(f"Val Loss: {val_epoch_loss:.4f}")
+#     train_loss.append(train_epoch_loss)
+#     val_loss.append(val_epoch_loss)
+#     print(f"Train Loss: {train_epoch_loss:.4f}")
+#     print(f"Val Loss: {val_epoch_loss:.4f}")
 
 
-# In[377]:
+# # In[377]:
 
 
-testIndex = 100
-testData = torch.from_numpy(train_dataFull[testIndex])
-testData = testData[None,:]
-#print(testData4.size())
-inp = model(testData) 
-print(f"inp: {inp}")
-print(f"groundtruth: {y[testIndex]}")
+# testIndex = 100
+# testData = torch.from_numpy(train_dataFull[testIndex])
+# testData = testData[None,:]
+# #print(testData4.size())
+# inp = model(testData) 
+# print(f"inp: {inp}")
+# print(f"groundtruth: {y[testIndex]}")
 
 
 # Try it again with a HistGradientBoosting 
@@ -1509,7 +1474,7 @@ model.fit(X, y)
 
 y_pred = model.predict(train_feat_new2[:2000])
 loss = r2_score(labels[:2000, featIndex], y_pred)
-loss
+# loss
 
 
 # make multioutput
@@ -1528,7 +1493,7 @@ model = MultiOutputRegressor(model).fit(train_feat_new2, y)
 
 y_pred = model.predict(train_feat_new2[:2000])
 loss = r2_score(labels[:2000, 11:], y_pred, multioutput='raw_values')
-loss
+# loss
 
 
 # In[94]:
@@ -1545,7 +1510,7 @@ for name in ['LABEL_RRate','LABEL_ABPm','LABEL_SpO2','LABEL_Heartrate']:
 # In[97]:
 
 
-Abgabe
+# Abgabe
 
 
 # Same with Median Imputer
@@ -1553,18 +1518,18 @@ Abgabe
 # In[152]:
 
 
-from sklearn.multioutput import MultiOutputRegressor
-y = labels[:,11:]
-model = HistGradientBoostingRegressor(max_depth=4, random_state=0)
-model = MultiOutputRegressor(model).fit(train_feat_new2MEDIAN, y)
+# from sklearn.multioutput import MultiOutputRegressor
+# y = labels[:,11:]
+# model = HistGradientBoostingRegressor(max_depth=4, random_state=0)
+# model = MultiOutputRegressor(model).fit(train_feat_new2MEDIAN, y)
 
 
-# In[153]:
+# # In[153]:
 
 
-y_pred = model.predict(train_feat_new2MEDIAN[:2000])
-loss = r2_score(labels[:2000, 11:], y_pred, multioutput='raw_values')
-loss
+# y_pred = model.predict(train_feat_new2MEDIAN[:2000])
+# loss = r2_score(labels[:2000, 11:], y_pred, multioutput='raw_values')
+# loss
 
 
 # Schlussforlgerung: Mit KNN Imputer und HistGradientBoosting und nicht SVM
@@ -1575,7 +1540,7 @@ loss
 import pandas as pd
 
 # suppose df is a pandas dataframe containing the result
-Abgabe.to_csv('prediction1.zip', index=False, float_format='%.3f', compression='zip')
+Abgabe.to_csv('prediction1PY.zip', index=False, float_format='%.3f', compression='zip')
 
 
 # In[ ]:
